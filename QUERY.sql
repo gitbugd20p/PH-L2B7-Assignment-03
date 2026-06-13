@@ -1,3 +1,4 @@
+
 -- =========================================================================
 -- SYSTEM: Football Ticket Booking System Database Setup Template
 -- DESCRIPTION: Pseudo-DDL Template for Table Creation & Data Insertion
@@ -14,11 +15,11 @@ DROP TABLE IF EXISTS Users;
 -- 1. CREATE USERS TABLE
 -- =========================================================================
 CREATE TABLE Users (
-    user_id TYPE,
-    full_name TYPE,
-    email TYPE,
-    role TYPE,
-    phone_number TYPE,
+    user_id serial PRIMARY KEY,
+    full_name varchar(101) NOT NULL,
+    email varchar(101) unique NOT NULL,
+    role varchar(25) NOT NULL check(role in('Football Fan', 'Ticket Manager')),
+    phone_number varchar(25)
     
     -- Write your constraint to make 'user_id' the Primary Key
     -- Write your constraint to ensure 'email' values are never duplicated
@@ -29,11 +30,11 @@ CREATE TABLE Users (
 -- 2. CREATE MATCHES TABLE
 -- =========================================================================
 CREATE TABLE Matches (
-    match_id TYPE,
-    fixture TYPE,
-    tournament_category TYPE,
-    base_ticket_price TYPE,
-    match_status TYPE,
+    match_id serial PRIMARY KEY,
+    fixture varchar(101) NOT NULL,
+    tournament_category varchar(101) NOT NULL,
+    base_ticket_price decimal(10,2) NOT NULL check(base_ticket_price >= 0),
+    match_status varchar(25) NOT NULL check(match_status in ('Available', 'Selling Fast', 'Sold Out', 'Postponed'))
     
     -- Write your constraint to make 'match_id' the Primary Key
     -- Write your check constraint to prevent negative ticket prices
@@ -44,12 +45,12 @@ CREATE TABLE Matches (
 -- 3. CREATE BOOKINGS TABLE
 -- =========================================================================
 CREATE TABLE Bookings (
-    booking_id TYPE,
-    user_id TYPE,
-    match_id TYPE,
-    seat_number TYPE,
-    payment_status TYPE,
-    total_cost TYPE,
+    booking_id serial PRIMARY KEY,
+    user_id int references users(user_id),
+    match_id int references matches(match_id),
+    seat_number varchar(25),
+    payment_status varchar(25) check(payment_status in ('Pending', 'Confirmed', 'Cancelled', 'Refunded')),
+    total_cost decimal(10, 2) NOT NULL check(total_cost >= 0)
     
     -- Write your constraint to make 'booking_id' the Primary Key
     -- Write your Foreign Key constraint linking 'user_id' to the Users table
@@ -87,3 +88,11 @@ INSERT INTO Bookings (booking_id, user_id, match_id, seat_number, payment_status
 (503, 2, 101, 'A-13', 'Confirmed', 150.00),
 (504, 2, 101, NULL, NULL, 150.00),
 (505, 3, 102, 'C-20', 'Pending', 120.00);
+
+
+
+
+
+
+
+
